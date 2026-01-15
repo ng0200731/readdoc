@@ -25,7 +25,14 @@ A modern web application for uploading, organizing, and searching through docume
 - Node.js 18+
 - npm or yarn
 
-### Installation
+### Quick Start (Windows)
+
+For Windows users, simply double-click the batch files:
+
+1. **`start-readdoc.bat`** - Full setup (installs dependencies, initializes database, starts server)
+2. **`quick-start.bat`** - Quick launch (assumes dependencies are already installed)
+
+### Manual Installation
 
 1. Clone the repository:
 ```bash
@@ -73,6 +80,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run init-db` - Initialize/reset database
+
+### Windows Batch Files
+
+- `start-readdoc.bat` - Full setup and launch (installs dependencies, initializes database, starts server)
+- `quick-start.bat` - Quick launch (assumes setup is complete)
 
 ### Project Structure
 
