@@ -111,9 +111,11 @@ export function DocumentManager() {
       {/* Left Panel - 30% width */}
       <div className="w-[30%] flex flex-col">
         {/* Upload Section - Top 30% of left panel */}
-        <div className="h-3/10 bg-white rounded-lg shadow-sm border m-4 p-4">
-          <h2 className="text-lg font-semibold mb-3">Upload Documents</h2>
-          <DocumentUpload onUploadComplete={handleUploadComplete} />
+        <div className="h-[30%] bg-white rounded-lg shadow-sm border m-4 p-4 flex flex-col">
+          <h2 className="text-lg font-semibold mb-3 flex-shrink-0">Upload Documents</h2>
+          <div className="flex-1 overflow-hidden">
+            <DocumentUpload onUploadComplete={handleUploadComplete} />
+          </div>
         </div>
 
         {/* Document List - Bottom 70% of left panel */}

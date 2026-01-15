@@ -67,47 +67,56 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="h-full flex flex-col space-y-3">
       {/* Dropzone */}
-      <Card className="border-2 border-dashed">
+      <Card className="border-2 border-dashed flex-1 flex flex-col justify-center">
         <div
           {...getRootProps()}
-          className={`p-8 text-center cursor-pointer transition-colors ${
+          className={`p-4 text-center cursor-pointer transition-colors h-full flex flex-col justify-center ${
             isDragActive
               ? 'border-blue-500 bg-blue-50'
               : 'border-gray-300 hover:border-gray-400'
           }`}
         >
           <input {...getInputProps()} />
-          <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <div className="space-y-2">
-            <p className="text-lg font-medium">
+          <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium">
               {isDragActive ? 'Drop files here...' : 'Drag & drop files here'}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500">
               or click to select files
             </p>
             <p className="text-xs text-gray-400">
-              Supported: PDF, TXT, MD, DOC, DOCX (max 10MB each)
+              PDF, TXT, MD, DOC, DOCX (max 10MB)
             </p>
           </div>
         </div>
       </Card>
 
-      {/* File List */}
+      {/* File List and Upload Button */}
       {uploadedFiles.length > 0 && (
-        <div className="space-y-2">
-          <h3 className="font-medium">Files to upload:</h3>
-          <div className="space-y-2 max-h-40 overflow-y-auto">
+        <div className="flex-shrink-0 space-y-2">
+          <div className="flex items-center justify-between">
+            <h3 className="font-medium text-sm">Files to upload ({uploadedFiles.length})</h3>
+            <Button
+              onClick={uploadFiles}
+              disabled={uploading}
+              size="sm"
+            >
+              {uploading ? 'Uploading...' : 'Upload'}
+            </Button>
+          </div>
+          <div className="space-y-1 max-h-20 overflow-y-auto">
             {uploadedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded border"
+                className="flex items-center justify-between p-1.5 bg-gray-50 rounded text-xs"
               >
-                <div className="flex items-center space-x-2">
-                  <File className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm truncate">{file.name}</span>
-                  <span className="text-xs text-gray-500">
+                <div className="flex items-center space-x-1 flex-1 min-w-0">
+                  <File className="h-3 w-3 text-gray-500 flex-shrink-0" />
+                  <span className="truncate">{file.name}</span>
+                  <span className="text-gray-500 flex-shrink-0">
                     ({(file.size / 1024 / 1024).toFixed(1)}MB)
                   </span>
                 </div>
@@ -115,25 +124,14 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => removeFile(index)}
-                  className="h-6 w-6 p-0"
+                  className="h-4 w-4 p-0 flex-shrink-0"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-2 w-2" />
                 </Button>
               </div>
             ))}
           </div>
         </div>
-      )}
-
-      {/* Upload Button */}
-      {uploadedFiles.length > 0 && (
-        <Button
-          onClick={uploadFiles}
-          disabled={uploading}
-          className="w-full"
-        >
-          {uploading ? 'Uploading...' : `Upload ${uploadedFiles.length} file(s)`}
-        </Button>
       )}
     </div>
   );
