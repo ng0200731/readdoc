@@ -11,7 +11,7 @@ export default function Home() {
             Document Reader
           </h1>
           <p className="text-gray-600">
-            Upload, organize, and search through your documents
+            doc founder
           </p>
         </div>
         <DocumentManager />

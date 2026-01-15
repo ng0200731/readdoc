@@ -104,7 +104,7 @@ export function DocumentManager() {
     }
   };
 
-  const showSearchResults = searchQuery.trim() && (searchResults.length > 0 || isSearching);
+  const showSearchResults = searchQuery.trim().length > 0;
 
   return (
     <div className="h-screen flex">
@@ -160,22 +160,32 @@ export function DocumentManager() {
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto">
-                <SearchResults
-                  results={searchResults}
-                  query={searchQuery}
-                  isLoading={isSearching}
-                />
+                {searchResults.length > 0 ? (
+                  <SearchResults
+                    results={searchResults}
+                    query={searchQuery}
+                    isLoading={isSearching}
+                  />
+                ) : !isSearching ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center">
+                      <div className="text-6xl mb-4">🔍</div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+                      <p className="text-gray-500">
+                        No documents match your search for "<span className="font-medium">{searchQuery}</span>".
+                        Try different keywords or check your spelling.
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : (
-            <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold mb-3">All Documents</h2>
-              <div className="flex-1 overflow-y-auto">
-                <DocumentList
-                  documents={documents}
-                  isLoading={isLoading}
-                  onDocumentUpdate={loadDocuments}
-                />
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <div className="text-6xl mb-4">📄</div>
+                <h3 className="text-lg font-medium mb-2">Document Search</h3>
+                <p>Use the search bar above to find documents</p>
               </div>
             </div>
           )}
