@@ -32,12 +32,33 @@ async function getSearchResults(query: string, filters: any = {}, limit: number 
       return filteredDocs.slice(0, limit);
     }
 
-    // Simple text search within filtered documents
-    const searchResults = filteredDocs.filter(doc =>
-      doc.content_text?.toLowerCase().includes(query.toLowerCase()) ||
-      doc.name.toLowerCase().includes(query.toLowerCase()) ||
-      doc.original_name.toLowerCase().includes(query.toLowerCase())
-    );
+    // Search within filtered documents with better Chinese character support
+    const searchResults = filteredDocs.filter(doc => {
+      const searchTerm = query.toLowerCase();
+      const contentText = doc.content_text?.toLowerCase() || '';
+      const name = doc.name?.toLowerCase() || '';
+      const originalName = doc.original_name?.toLowerCase() || '';
+
+      // Exact match first
+      if (contentText.includes(searchTerm) ||
+          name.includes(searchTerm) ||
+          originalName.includes(searchTerm)) {
+        return true;
+      }
+
+      // For Chinese characters, also try partial matching
+      // Split Chinese characters and search for individual characters
+      if (/[\u4e00-\u9fff]/.test(query)) {
+        const chineseChars = query.split('');
+        return chineseChars.some(char =>
+          contentText.includes(char) ||
+          name.includes(char) ||
+          originalName.includes(char)
+        );
+      }
+
+      return false;
+    });
 
     // Limit results
     return searchResults.slice(0, limit);

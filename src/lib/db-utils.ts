@@ -33,10 +33,22 @@ const mockDocuments: Document[] = [
     file_path: 'notes.md',
     file_type: 'text/markdown',
     size: 4096,
-    content_text: '# Project Notes\n\nThis project demonstrates document management with search capabilities. Features include file upload, text extraction, and full-text search.',
+    content_text: '# Project Notes\n\nThis project demonstrates document management with search capabilities. Features include file upload, text extraction, and full-text search.\n\nQC 前端加入一 - Quality Control frontend integration step one.',
     uploaded_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     groups: 'Notes,Project'
+  },
+  {
+    id: 4,
+    name: 'chinese-document.txt',
+    original_name: 'chinese-document.txt',
+    file_path: 'chinese.txt',
+    file_type: 'text/plain',
+    size: 1024,
+    content_text: '这是一个中文文档示例。QC 前端加入一，包含一些中文搜索测试内容。',
+    uploaded_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    groups: 'Chinese,Test'
   }
 ];
 
@@ -77,19 +89,34 @@ export function searchDocuments(query: string): Document[] {
   // Use Fuse.js for fuzzy search on mock data
   const allDocs = getAllDocuments();
 
-  // Configure Fuse.js for fuzzy matching
+  // Configure Fuse.js for better Chinese character support
   const fuse = new Fuse(allDocs, {
     keys: [
       { name: 'content_text', weight: 0.7 },
       { name: 'name', weight: 0.2 },
       { name: 'original_name', weight: 0.1 }
     ],
-    threshold: 0.3, // Lower threshold = more strict matching
+    threshold: 0.4, // Slightly higher threshold for better Chinese matching
     includeScore: true,
-    includeMatches: true
+    includeMatches: true,
+    useExtendedSearch: true, // Better for non-English characters
+    // Add tokenizer for Chinese characters
+    tokenize: true,
+    matchAllTokens: true
   });
 
   const results = fuse.search(query);
+
+  // If no results with extended search, try a simpler approach
+  if (results.length === 0) {
+    // Simple text search for Chinese characters
+    const simpleResults = allDocs.filter(doc =>
+      doc.content_text?.includes(query) ||
+      doc.name?.includes(query) ||
+      doc.original_name?.includes(query)
+    );
+    return simpleResults;
+  }
 
   // Convert Fuse.js results back to Document format
   return results.map(result => ({
