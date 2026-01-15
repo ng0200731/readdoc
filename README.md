@@ -55,7 +55,15 @@ npm run init-db
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3003](http://localhost:3003) in your browser.
+
+## Current Status ✅
+
+- **Server**: Running successfully at `http://localhost:3003`
+- **Features**: Upload, search, organize, rename documents
+- **Search**: Supports English and Chinese characters
+- **UI**: Clean, responsive interface
+- **Database**: SQLite with full-text search
 
 ## Usage
 
