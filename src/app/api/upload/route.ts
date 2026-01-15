@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join, extname } from 'path';
 import { randomUUID } from 'crypto';
-import pdfParse from 'pdf-parse';
+import * as pdfParse from 'pdf-parse';
 import mammoth from 'mammoth';
 
 // Supported file types
