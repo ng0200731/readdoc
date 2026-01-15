@@ -1,0 +1,89 @@
+4F7C86A6-61AB-4010-8293-911025046754
+MONTHPRO-7424-E6F2-D85E xxx
+
+
+MONTH-B1BC-5B8D-FAFB
+
+
+MONTH-354D-1CCE-25AE
+
+97EE00CF-736F-4332-8C1B-1D86C20D2420
+sk_4a2158ce829d679cdd8e17429e1956991120d2538359f91248c4f15d39f6de36
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_9ced01a2ed7297a1efcf1b1e10b0a229a5efbcde7734057d6bafd1a439905606"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+
+
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_952601fdeee13abc0c0b5434455a496705526b17e6d9ad56d7fe16e9839f7271"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+sk_b6c2746838a0a8eec058e363bb864f7f1648d7ef986ddf717b0bbd8e0776a65f
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_952601fdeee13abc0c0b5434455a496705526b17e6d9ad56d7fe16e9839f7271"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_2f7e77698601597d75fd9f852057aebf7bb7b01e768fbddbefe50e6f5ef12271"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_b35b365acaafe9b1c19259261d3a1ba35db5b62abcbb1e6b7496ddffd6cb945f"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+sk_b6c2746838a0a8eec058e363bb864f7f1648d7ef986ddf717b0bbd8e0776a65f
+
+
+
+sk_952601fdeee13abc0c0b5434455a496705526b17e6d9ad56d7fe16e9839f7271
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_2f7e77698601597d75fd9f852057aebf7bb7b01e768fbddbefe50e6f5ef12271"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+
+sk_263f66291cd48b931345b495aa0010962b76da9d8c49a297c5ac663098ff6999
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_263f66291cd48b931345b495aa0010962b76da9d8c49a297c5ac663098ff6999"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+sk_3e584b736f2e486cf01ec2c87ffc71e580953da4221927359d058225f286d1ab
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_3e584b736f2e486cf01ec2c87ffc71e580953da4221927359d058225f286d1ab"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+
+
+sk_5bf13b56a4ef22c8040e15dce51d7c390eb1c0c14b1314e8e24cc6569fe05517
+
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk_5bf13b56a4ef22c8040e15dce51d7c390eb1c0c14b1314e8e24cc6569fe05517"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+$env:ANTHROPIC_AUTH_TOKEN = "s3GHNX1YY-Y62J-GQST-4PBG-2J5A7NP1UNN5"
+$env:ANTHROPIC_BASE_URL = "https://www.xiangluai.com/api/v1"
+
+
+[Environment]::SetEnvironmentVariable("ANTHROPIC_AUTH_TOKEN", "3GHNX1YY-Y62J-GQST-4PBG-2J5A7NP1UNN5", "User")
+[Environment]::SetEnvironmentVariable("ANTHROPIC_BASE_URL", "https://code.newcli.com/claude/aws", "User")
+
+
+[Environment]::SetEnvironmentVariable("ANTHROPIC_AUTH_TOKEN", "sk-ant-oat01-oQkais5k3QxWJ4HscqDD-t3DnU5zLdR5iTmBm4ToU1ovMv7XiRiZlRKVXcSuTKO2bky5k5DszwzA7p81iYie55PvDCZySAA", "User")
+[Environment]::SetEnvironmentVariable("ANTHROPIC_BASE_URL", "https://code.newcli.com/claude/aws", "User")
+
