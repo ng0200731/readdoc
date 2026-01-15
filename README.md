@@ -86,6 +86,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - `start-readdoc.bat` - Full setup and launch (installs dependencies, initializes database, starts server)
 - `quick-start.bat` - Quick launch (assumes setup is complete)
 
+**Port Handling:** Both batch files automatically detect available ports starting from 3000, so they work even when other services are using common ports.
+
 ### Project Structure
 
 ```
