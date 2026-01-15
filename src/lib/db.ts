@@ -4,11 +4,20 @@ import path from 'path';
 // Database path
 const DB_PATH = path.join(process.cwd(), 'documents.db');
 
-// Initialize database
-const db = new Database(DB_PATH);
+// Initialize database with error handling
+let db: Database;
+let dbInitialized = false;
 
-// Enable WAL mode for better performance
-db.pragma('journal_mode = WAL');
+try {
+  db = new Database(DB_PATH);
+  // Enable WAL mode for better performance
+  db.pragma('journal_mode = WAL');
+  dbInitialized = true;
+} catch (error) {
+  console.error('Failed to initialize database:', error);
+  console.log('Running in demo mode without database...');
+  // We'll provide mock data in the functions below
+}
 
 // Create tables
 db.exec(`

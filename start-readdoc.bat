@@ -43,7 +43,17 @@ echo.
 
 echo Starting ReadDoc development server...
 
+REM Kill any existing Next.js processes to avoid lock conflicts
+echo Stopping any existing Next.js processes...
+if exist ".next\dev\lock" (
+    echo Removing Next.js lock file...
+    del ".next\dev\lock" 2>nul
+)
+taskkill /f /im node.exe /fi "WINDOWTITLE eq next dev" >nul 2>&1
+timeout /t 1 /nobreak >nul
+
 REM Check if port 3000 is available, if not find next available port
+echo Detecting available port...
 powershell -Command "& { $port = 3000; while ((Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue).TcpTestSucceeded) { $port++ }; Write-Host $port }" > temp_port.txt 2>nul
 set /p START_PORT=<temp_port.txt
 del temp_port.txt 2>nul

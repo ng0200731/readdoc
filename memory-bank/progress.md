@@ -7,7 +7,7 @@
 - [x] implementation-plan.md - Step-by-step implementation plan
 
 ## Current Status
-Completed Step 4: Document Management UI. Ready to begin Step 5: Search Functionality
+Completed Step 5: Search Functionality. Ready to begin Step 6: UI Polish & Mobile Responsiveness
 
 ## Step Progress
 ### Step 1: Project Setup & Basic Structure ✅ COMPLETED
@@ -36,6 +36,14 @@ Completed Step 4: Document Management UI. Ready to begin Step 5: Search Function
 - [x] Implement document rename functionality
 - [x] Create group creation/management UI
 - [x] Add document-to-group assignment interface
+
+### Step 5: Search Functionality ✅ COMPLETED
+- [x] Set up SQLite Full-Text Search (FTS) virtual table
+- [x] Create search API endpoint (`/api/search`)
+- [x] Implement fuzzy search with Fuse.js as backup
+- [x] Add search UI with input field and results display
+- [x] Highlight search terms in results
+- [x] Add filtering by document type and group
 
 ### Step 2: Database Setup & Models
 - [ ] Set up better-sqlite3 connection
