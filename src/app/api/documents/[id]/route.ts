@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateDocument, deleteDocument, getDocumentById } from '@/lib/db-utils';
 
 interface RouteParams {
   params: {
@@ -13,6 +12,7 @@ export async function GET(
   { params }: RouteParams
 ) {
   try {
+    const { getDocumentById } = await import('@/lib/db-server');
     const documentId = parseInt(params.id);
     if (isNaN(documentId)) {
       return NextResponse.json(
@@ -45,6 +45,7 @@ export async function PATCH(
   { params }: RouteParams
 ) {
   try {
+    const { updateDocument } = await import('@/lib/db-server');
     const documentId = parseInt(params.id);
     if (isNaN(documentId)) {
       return NextResponse.json(
@@ -87,6 +88,7 @@ export async function DELETE(
   { params }: RouteParams
 ) {
   try {
+    const { getDocumentById, deleteDocument } = await import('@/lib/db-server');
     const documentId = parseInt(params.id);
     if (isNaN(documentId)) {
       return NextResponse.json(

@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       await writeFile(filePath, buffer);
 
       // Save to database
-      const { createDocument } = await import('@/lib/db-utils');
+      const { createDocument } = await import('@/lib/db-server');
       const document = createDocument({
         name: file.name,
         originalName: file.name,
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 // GET endpoint to list uploaded documents (for testing)
 export async function GET() {
   try {
-    const { getAllDocuments } = await import('@/lib/db-utils');
+    const { getAllDocuments } = await import('@/lib/db-server');
     const documents = getAllDocuments();
 
     return NextResponse.json({ documents });

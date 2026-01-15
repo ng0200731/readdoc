@@ -5,8 +5,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    // TODO: Implement get all groups
-    return NextResponse.json({ groups: [] });
+    const { getAllGroups } = await import('@/lib/db-server');
+    const groups = getAllGroups();
+    return NextResponse.json({ groups });
   } catch (error) {
     console.error('Error fetching groups:', error);
     return NextResponse.json(
@@ -28,16 +29,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Implement create group
-    console.log('Creating group:', name);
+    const { createGroup } = await import('@/lib/db-server');
+    const group = createGroup(name.trim());
 
-    return NextResponse.json({
-      group: {
-        id: Date.now(), // Temporary ID
-        name: name.trim(),
-        created_at: new Date().toISOString(),
-      }
-    });
+    return NextResponse.json({ group });
   } catch (error) {
     console.error('Error creating group:', error);
     return NextResponse.json(

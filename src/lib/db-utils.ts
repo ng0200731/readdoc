@@ -1,4 +1,50 @@
-import { dbStatements } from './db';
+import Fuse from 'fuse.js';
+
+// Mock data for when database is not available
+const mockDocuments: Document[] = [
+  {
+    id: 1,
+    name: 'sample-document.pdf',
+    original_name: 'sample-document.pdf',
+    file_path: 'sample.pdf',
+    file_type: 'application/pdf',
+    size: 1024000,
+    content_text: 'This is a sample PDF document with some searchable content. It contains information about document management and search functionality.',
+    uploaded_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    groups: 'Documentation'
+  },
+  {
+    id: 2,
+    name: 'readme.txt',
+    original_name: 'readme.txt',
+    file_path: 'readme.txt',
+    file_type: 'text/plain',
+    size: 2048,
+    content_text: 'Welcome to ReadDoc! This application allows you to upload, organize, and search through your documents efficiently.',
+    uploaded_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    groups: 'Documentation'
+  },
+  {
+    id: 3,
+    name: 'project-notes.md',
+    original_name: 'project-notes.md',
+    file_path: 'notes.md',
+    file_type: 'text/markdown',
+    size: 4096,
+    content_text: '# Project Notes\n\nThis project demonstrates document management with search capabilities. Features include file upload, text extraction, and full-text search.',
+    uploaded_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    groups: 'Notes,Project'
+  }
+];
+
+const mockGroups: Group[] = [
+  { id: 1, name: 'Documentation', created_at: new Date().toISOString() },
+  { id: 2, name: 'Notes', created_at: new Date().toISOString() },
+  { id: 3, name: 'Project', created_at: new Date().toISOString() }
+];
 
 export interface Document {
   id: number;
@@ -19,87 +65,46 @@ export interface Group {
   created_at: string;
 }
 
-// Document operations
-export function createDocument(data: {
-  name: string;
-  originalName: string;
-  filePath: string;
-  fileType: string;
-  size: number;
-  contentText?: string;
-}): Document {
-  const result = dbStatements.insertDocument.run(
-    data.name,
-    data.originalName,
-    data.filePath,
-    data.fileType,
-    data.size,
-    data.contentText || null
-  );
-
-  return getDocumentById(result.lastInsertRowid as number)!;
-}
-
-export function getDocumentById(id: number): Document | null {
-  const doc = dbStatements.getDocumentById.get(id) as Document | undefined;
-  return doc || null;
-}
-
+// Document operations - Client-side only uses mock data or API calls
 export function getAllDocuments(): Document[] {
-  return dbStatements.getAllDocuments.all() as Document[];
+  // Always return mock data for client-side usage
+  // Real database operations happen in API routes
+  return mockDocuments;
 }
 
-export function updateDocument(id: number, name: string): boolean {
-  const result = dbStatements.updateDocument.run(name, id);
-  return result.changes > 0;
-}
-
-export function deleteDocument(id: number): boolean {
-  const result = dbStatements.deleteDocument.run(id);
-  return result.changes > 0;
-}
-
-// Search operations
+// Search operations - Client-side fuzzy search on mock data
 export function searchDocuments(query: string): Document[] {
-  try {
-    // Use SQLite FTS for exact matches
-    const ftsResults = dbStatements.searchDocuments.all(query) as Document[];
-    if (ftsResults.length > 0) {
-      return ftsResults;
-    }
-  } catch (error) {
-    // FTS query failed, fall back to basic text search
-    console.warn('FTS search failed, falling back to basic search');
-  }
-
-  // Fallback: basic LIKE search
+  // Use Fuse.js for fuzzy search on mock data
   const allDocs = getAllDocuments();
-  const searchTerm = query.toLowerCase();
 
-  return allDocs.filter(doc =>
-    doc.content_text?.toLowerCase().includes(searchTerm) ||
-    doc.name.toLowerCase().includes(searchTerm) ||
-    doc.original_name.toLowerCase().includes(searchTerm)
-  );
+  // Configure Fuse.js for fuzzy matching
+  const fuse = new Fuse(allDocs, {
+    keys: [
+      { name: 'content_text', weight: 0.7 },
+      { name: 'name', weight: 0.2 },
+      { name: 'original_name', weight: 0.1 }
+    ],
+    threshold: 0.3, // Lower threshold = more strict matching
+    includeScore: true,
+    includeMatches: true
+  });
+
+  const results = fuse.search(query);
+
+  // Convert Fuse.js results back to Document format
+  return results.map(result => ({
+    ...result.item,
+    // Add a highlighted snippet if matches exist
+    highlighted_text: result.matches?.[0]?.value?.substring(
+      Math.max(0, result.matches[0].indices[0][0] - 50),
+      Math.min(result.item.content_text?.length || 0, result.matches[0].indices[0][1] + 50)
+    )
+  }));
 }
 
-// Group operations
-export function createGroup(name: string): Group {
-  const result = dbStatements.insertGroup.run(name);
-  return getGroupById(result.lastInsertRowid as number)!;
-}
-
+// Group operations - Client-side only uses mock data
 export function getAllGroups(): Group[] {
-  return dbStatements.getAllGroups.all() as Group[];
-}
-
-export function getGroupById(id: number): Group | null {
-  const group = dbStatements.getGroupById.get(id) as Group | undefined;
-  return group || null;
-}
-
-export function getDocumentsByGroup(groupId: number): Document[] {
-  return dbStatements.getDocumentsByGroup.all(groupId) as Document[];
+  return mockGroups;
 }
 
 // Document-Group relationship operations
