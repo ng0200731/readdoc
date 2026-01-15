@@ -44,7 +44,7 @@ echo.
 echo Starting ReadDoc development server...
 
 REM Check if port 3000 is available, if not find next available port
-powershell -Command "& { $port = 3000; while ((Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue).TcpTestSucceeded) { $port++ }; Write-Host \"Using port: $port\" }" > temp_port.txt 2>nul
+powershell -Command "& { $port = 3000; while ((Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue).TcpTestSucceeded) { $port++ }; Write-Host $port }" > temp_port.txt 2>nul
 set /p START_PORT=<temp_port.txt
 del temp_port.txt 2>nul
 
