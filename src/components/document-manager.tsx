@@ -107,59 +107,78 @@ export function DocumentManager() {
   const showSearchResults = searchQuery.trim() && (searchResults.length > 0 || isSearching);
 
   return (
-    <div className="space-y-6">
-      {/* Upload Section */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-xl font-semibold mb-4">Upload Documents</h2>
-        <DocumentUpload onUploadComplete={handleUploadComplete} />
+    <div className="h-screen flex">
+      {/* Left Panel - 30% width */}
+      <div className="w-[30%] flex flex-col">
+        {/* Upload Section - Top 30% of left panel */}
+        <div className="h-3/10 bg-white rounded-lg shadow-sm border m-4 p-4">
+          <h2 className="text-lg font-semibold mb-3">Upload Documents</h2>
+          <DocumentUpload onUploadComplete={handleUploadComplete} />
+        </div>
+
+        {/* Document List - Bottom 70% of left panel */}
+        <div className="flex-1 bg-white rounded-lg shadow-sm border m-4 mt-0 p-4 overflow-hidden">
+          <h2 className="text-lg font-semibold mb-3">
+            Documents ({documents.length})
+          </h2>
+          <div className="h-full overflow-y-auto">
+            <DocumentList
+              documents={documents}
+              isLoading={isLoading}
+              onDocumentUpdate={loadDocuments}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Search and Group Management */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <div className="flex flex-col lg:flex-row gap-4 mb-4">
-          <div className="flex-1">
-            <SearchBar onSearch={handleSearch} isSearching={isSearching} availableGroups={groups} />
-          </div>
-          <div className="lg:w-64">
+      {/* Right Panel - 70% width */}
+      <div className="flex-1 flex flex-col">
+        {/* Search Section - Top 20% of right panel */}
+        <div className="h-1/5 bg-white rounded-lg shadow-sm border m-4 p-4">
+          <h2 className="text-lg font-semibold mb-3">Search Documents</h2>
+          <SearchBar onSearch={handleSearch} isSearching={isSearching} availableGroups={groups} />
+          <div className="mt-3">
             <GroupManager />
           </div>
         </div>
-      </div>
 
-      {/* Search Results or Document List */}
-      {showSearchResults ? (
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">
-              Search Results ({searchResults.length})
-            </h2>
-            <button
-              onClick={() => setSearchQuery('')}
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              Clear search
-            </button>
-          </div>
-          <SearchResults
-            results={searchResults}
-            query={searchQuery}
-            isLoading={isSearching}
-          />
+        {/* Search Results - Bottom 80% of right panel */}
+        <div className="flex-1 bg-white rounded-lg shadow-sm border m-4 mt-0 p-4 overflow-hidden">
+          {showSearchResults ? (
+            <div className="h-full flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-semibold">
+                  Search Results ({searchResults.length})
+                </h2>
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Clear search
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <SearchResults
+                  results={searchResults}
+                  query={searchQuery}
+                  isLoading={isSearching}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="h-full flex flex-col">
+              <h2 className="text-lg font-semibold mb-3">All Documents</h2>
+              <div className="flex-1 overflow-y-auto">
+                <DocumentList
+                  documents={documents}
+                  isLoading={isLoading}
+                  onDocumentUpdate={loadDocuments}
+                />
+              </div>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">
-              Documents ({documents.length})
-            </h2>
-          </div>
-          <DocumentList
-            documents={documents}
-            isLoading={isLoading}
-            onDocumentUpdate={loadDocuments}
-          />
-        </div>
-      )}
+      </div>
     </div>
   );
 }
