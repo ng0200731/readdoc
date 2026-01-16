@@ -117,3 +117,4 @@ export function SearchResults({ results, query, isLoading }: SearchResultsProps)
     </div>
   );
 }
+
