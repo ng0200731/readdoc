@@ -32,32 +32,27 @@ async function getSearchResults(query: string, filters: any = {}, limit: number 
       return filteredDocs.slice(0, limit);
     }
 
-    // Search within filtered documents with better Chinese character support
-    const searchResults = filteredDocs.filter(doc => {
-      const searchTerm = query.toLowerCase();
-      const contentText = doc.content_text?.toLowerCase() || '';
-      const name = doc.name?.toLowerCase() || '';
-      const originalName = doc.original_name?.toLowerCase() || '';
+    // Search within filtered documents with token-based matching
+    const isCjk = /[\u4e00-\u9fff]/.test(query);
+    const tokens: string[] = isCjk
+      ? Array.from(query) // split into characters for CJK
+      : query.split(/\s+/).filter(Boolean); // split by whitespace for non-CJK
 
-      // Exact match first
-      if (contentText.includes(searchTerm) ||
-          name.includes(searchTerm) ||
-          originalName.includes(searchTerm)) {
+    const searchResults = filteredDocs.filter(doc => {
+      const contentText = (doc.content_text || '').toLowerCase();
+      const name = (doc.name || '').toLowerCase();
+      const originalName = (doc.original_name || '').toLowerCase();
+
+      // Exact phrase match first
+      if (query && (contentText.includes(query.toLowerCase()) || name.includes(query.toLowerCase()) || originalName.includes(query.toLowerCase()))) {
         return true;
       }
 
-      // For Chinese characters, also try partial matching
-      // Split Chinese characters and search for individual characters
-      if (/[\u4e00-\u9fff]/.test(query)) {
-        const chineseChars = query.split('');
-        return chineseChars.some(char =>
-          contentText.includes(char) ||
-          name.includes(char) ||
-          originalName.includes(char)
-        );
-      }
-
-      return false;
+      // Token-based OR matching: return true if any token is present
+      return tokens.some(token => {
+        const t = token.toLowerCase();
+        return contentText.includes(t) || name.includes(t) || originalName.includes(t);
+      });
     });
 
     // Limit results
