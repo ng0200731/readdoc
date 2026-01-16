@@ -100,15 +100,33 @@ export async function GET(request: NextRequest) {
     const results = await getSearchResults(query, filters, Math.min(limit, 100)); // Cap at 100 results
 
     // Format results for frontend
-    const formattedResults = results.map(result => ({
-      id: result.id,
-      name: result.name,
-      fileType: result.file_type,
-      size: result.size,
-      uploadedAt: result.uploaded_at,
-      highlightedText: result.highlighted_text || result.content_text?.substring(0, 200) + '...',
-      groups: result.groups ? result.groups.split(',').filter(g => g.trim()) : []
-    }));
+    const formattedResults = results.map(result => {
+      const content = result.content_text || '';
+      const q = query.toLowerCase();
+      let snippet = '';
+
+      if (content) {
+        const lower = content.toLowerCase();
+        const idx = lower.indexOf(q);
+        if (idx >= 0) {
+          const start = Math.max(0, idx - 60);
+          const end = Math.min(content.length, idx + 60);
+          snippet = (start > 0 ? '...' : '') + content.substring(start, end) + (end < content.length ? '...' : '');
+        } else {
+          snippet = content.substring(0, 200) + (content.length > 200 ? '...' : '');
+        }
+      }
+
+      return {
+        id: result.id,
+        name: result.name,
+        fileType: result.file_type,
+        size: result.size,
+        uploadedAt: result.uploaded_at,
+        highlightedText: result.highlighted_text || snippet,
+        groups: result.groups ? result.groups.split(',').filter(g => g.trim()) : []
+      };
+    });
 
     return NextResponse.json({
       query,
