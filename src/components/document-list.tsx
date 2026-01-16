@@ -145,3 +145,4 @@ export function DocumentList({ documents, isLoading, onDocumentUpdate }: Documen
     </div>
   );
 }
+

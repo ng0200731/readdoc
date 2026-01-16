@@ -18,3 +18,4 @@ echo.
 REM Force a specific port to avoid conflicts
 set PORT=3003
 npm run dev
+
