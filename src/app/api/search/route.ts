@@ -90,11 +90,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (query && query.length < 2) {
-      return NextResponse.json(
-        { error: 'Query must be at least 2 characters long' },
-        { status: 400 }
-      );
+    if (query) {
+      const isCjk = /[\u4e00-\u9fff]/.test(query);
+      if (query.length < 2 && !isCjk) {
+        return NextResponse.json(
+          { error: 'Query must be at least 2 characters long (or a single CJK character)' },
+          { status: 400 }
+        );
+      }
     }
 
     const results = await getSearchResults(query, filters, Math.min(limit, 100)); // Cap at 100 results
