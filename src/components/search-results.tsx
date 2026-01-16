@@ -12,7 +12,7 @@ interface SearchResult {
   fileType: string;
   size: number;
   uploadedAt: string;
-  highlightedText?: string;
+  snippets?: string[];
   groups: string[];
 }
 
@@ -23,12 +23,27 @@ interface SearchResultsProps {
 }
 
 export function SearchResults({ results, query, isLoading }: SearchResultsProps) {
-  const highlightText = (text: string, query: string) => {
-    if (!query || !text) return text;
+  const escapeHtml = (unsafe: string) => {
+    return unsafe
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
 
-    // Simple highlighting - replace query terms with marked spans
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+  const highlightText = (text: string, query: string) => {
+    if (!query || !text) return escapeHtml(text);
+
+    const isCjk = /[\u4e00-\u9fff]/.test(query);
+    const tokens = isCjk ? Array.from(query) : query.split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return escapeHtml(text);
+
+    const escaped = escapeHtml(text);
+    // Build regex for tokens (escape each)
+    const parts = tokens.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const regex = new RegExp(`(${parts.join('|')})`, 'gi');
+    return escaped.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
   };
 
   if (isLoading) {
@@ -90,14 +105,17 @@ export function SearchResults({ results, query, isLoading }: SearchResultsProps)
                   )}
                 </div>
 
-                {result.highlightedText && (
-                  <div
-                    className="text-sm text-gray-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightText(result.highlightedText, query)
-                    }}
-                  />
-                )}
+                {result.snippets && result.snippets.length > 0 ? (
+                  <div className="space-y-2 text-sm text-gray-700 leading-relaxed">
+                    {result.snippets.map((s, i) => (
+                      <div
+                        key={i}
+                        className="snippet"
+                        dangerouslySetInnerHTML={{ __html: highlightText(s, query) }}
+                      />
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </div>
 

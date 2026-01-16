@@ -109,22 +109,51 @@ export async function GET(request: NextRequest) {
     const results = await getSearchResults(query, filters, Math.min(limit, 100)); // Cap at 100 results
 
     // Format results for frontend
+    // Helper: split into sentences/snippets
+    const extractSnippets = (text: string, q: string, maxSnippets = 3) => {
+      if (!text) return [];
+      const snippets: string[] = [];
+      const isCjk = /[\u4e00-\u9fff]/.test(q);
+      // split text into sentences depending on CJK or non-CJK
+      const parts = isCjk
+        ? text.split(/(?<=[。！？；\n\r])/u)
+        : text.split(/(?<=[.!?]\s)|\n/u);
+
+      const tokens = isCjk ? Array.from(q) : q.split(/\s+/).filter(Boolean);
+      const qLower = q.toLowerCase();
+
+      for (const part of parts) {
+        const partTrim = part.trim();
+        if (!partTrim) continue;
+        const lower = partTrim.toLowerCase();
+        // phrase match
+        if (q && lower.includes(qLower)) {
+          snippets.push(partTrim);
+        } else {
+          // token match: any token present
+          const matched = tokens.some(t => {
+            if (!t) return false;
+            if (isCjk) {
+              return partTrim.includes(t);
+            }
+            return lower.includes(t.toLowerCase());
+          });
+          if (matched) snippets.push(partTrim);
+        }
+        if (snippets.length >= maxSnippets) break;
+      }
+
+      // fallback: return start of document if nothing found
+      if (snippets.length === 0) {
+        const s = text.length > 200 ? text.substring(0, 200) + '...' : text;
+        return [s];
+      }
+      return snippets;
+    };
+
     const formattedResults = results.map(result => {
       const content = result.content_text || '';
-      const q = query.toLowerCase();
-      let snippet = '';
-
-      if (content) {
-        const lower = content.toLowerCase();
-        const idx = lower.indexOf(q);
-        if (idx >= 0) {
-          const start = Math.max(0, idx - 60);
-          const end = Math.min(content.length, idx + 60);
-          snippet = (start > 0 ? '...' : '') + content.substring(start, end) + (end < content.length ? '...' : '');
-        } else {
-          snippet = content.substring(0, 200) + (content.length > 200 ? '...' : '');
-        }
-      }
+      const snippets = extractSnippets(content, query, 3);
 
       return {
         id: result.id,
@@ -132,7 +161,7 @@ export async function GET(request: NextRequest) {
         fileType: result.file_type,
         size: result.size,
         uploadedAt: result.uploaded_at,
-        highlightedText: result.highlighted_text || snippet,
+        snippets,
         groups: result.groups ? result.groups.split(',').filter(g => g.trim()) : []
       };
     });
