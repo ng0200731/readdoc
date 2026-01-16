@@ -39,16 +39,27 @@ async function getSearchResults(query: string, filters: any = {}, limit: number 
       : query.split(/\s+/).filter(Boolean); // split by whitespace for non-CJK
 
     const searchResults = filteredDocs.filter(doc => {
-      const contentText = (doc.content_text || '').toLowerCase();
-      const name = (doc.name || '').toLowerCase();
-      const originalName = (doc.original_name || '').toLowerCase();
+      const contentRaw = doc.content_text || '';
+      const nameRaw = doc.name || '';
+      const originalNameRaw = doc.original_name || '';
+      const contentText = contentRaw.toLowerCase();
+      const name = nameRaw.toLowerCase();
+      const originalName = originalNameRaw.toLowerCase();
 
-      // Exact phrase match first
+      // Exact phrase match first (case-insensitive)
       if (query && (contentText.includes(query.toLowerCase()) || name.includes(query.toLowerCase()) || originalName.includes(query.toLowerCase()))) {
         return true;
       }
 
-      // Token-based OR matching: return true if any token is present
+      // If single CJK character query, also check raw content (avoid lowercasing issues)
+      if (isCjk && tokens.length === 1) {
+        const ch = tokens[0];
+        if (contentRaw.includes(ch) || nameRaw.includes(ch) || originalNameRaw.includes(ch)) {
+          return true;
+        }
+      }
+
+      // Token-based OR matching: return true if any token is present (case-insensitive)
       return tokens.some(token => {
         const t = token.toLowerCase();
         return contentText.includes(t) || name.includes(t) || originalName.includes(t);
